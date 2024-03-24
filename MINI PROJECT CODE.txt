@@ -1,0 +1,36 @@
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+int buzzerPin = 9; // Assuming the buzzer is connected to pin 9
+
+void setup() {
+  Serial.begin(9600);
+  lcd.init();
+  lcd.backlight();
+  pinMode(buzzerPin, OUTPUT);
+}
+
+void loop() {
+  int value = analogRead(A0);
+  lcd.setCursor(0, 0);
+  lcd.print("Value :");
+  lcd.print(value);
+  lcd.print("   ");
+  Serial.println(value);
+  lcd.setCursor(0, 1);
+  lcd.print("W Level :");
+
+  if (value == 0) {
+    lcd.print("Empty ");
+    noTone(buzzerPin); // Turn off the buzzer
+  } else if (value > 1 && value < 350) {
+    lcd.print("LOW   ");
+    noTone(buzzerPin); // Turn off the buzzer
+  } else if (value > 350 && value < 470) {
+    lcd.print("Medium");
+    noTone(buzzerPin); // Turn off the buzzer
+  } else if (value > 470) {
+    lcd.print("HIGH  ");
+    tone(buzzerPin, 1000); // Turn on the buzzer at a frequency of 1000 Hz
+  }
+}
